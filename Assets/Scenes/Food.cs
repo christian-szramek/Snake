@@ -3,11 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Food : MonoBehaviour
-{
+{ 
     public BoxCollider2D gridArea;
+    private char letter;
+    private int framesAway;
 
     private void Start() {
         RandomizePosition();
+        letter = GetRandomLetter();
+        ChangeLetter(letter);
+    }
+
+    private void Update() {
+        if (Input.GetKeyDown("" + letter))
+        {
+            framesAway = 0;
+        }
+        framesAway++;
     }
 
     private void RandomizePosition() {
@@ -24,7 +36,25 @@ public class Food : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other ) {
         if (other.tag == "Player")
         {
-            RandomizePosition();   
+            if (framesAway <= 50)
+            {
+                RandomizePosition();
+                letter = GetRandomLetter();
+                ChangeLetter(letter);       
+            } 
+            Debug.Log(framesAway);
         }
+    }
+
+    // function to change the letter
+    private void ChangeLetter(char letter) {
+        GameObject letterFood = GameObject.FindGameObjectWithTag ("Food");
+        TextMesh t = letterFood.GetComponent<TextMesh>();
+        t.text = "" + letter;
+    }
+
+    // function to get a new randomized letter in lower case
+    private char GetRandomLetter() {
+        return System.Convert.ToChar(Random.Range(97,123));
     }
 }

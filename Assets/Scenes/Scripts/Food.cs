@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
+using UnityEngine.SceneManagement;
 
 public class Food : MonoBehaviour
 { 
@@ -12,33 +13,48 @@ public class Food : MonoBehaviour
     private int index;
     private string resultWord;
     private string playerWord;
+    private int wordLength = 10;
     
     private string[] resultWords = new string[]{"Strawberry", "Friendship", "Everything", "Appreciate", "Motivation"};
 
     private KeywordRecognizer recognizer;
-    
-    private GameObject WinButton;
+
+    private float time;
+    public static float score;
 
     private void Start() {
         // initialize everything for the word 
         index = 0;
         resultWord = resultWords[GetRandomWordIndex(resultWords.Length)];
         playerWord = "----------";
-        GameObject.FindGameObjectWithTag("Word").GetComponent<TextMesh>().text = playerWord;
+        if (GameObject.FindGameObjectWithTag("Word") != null)
+        {
+            GameObject.FindGameObjectWithTag("Word").GetComponent<TextMesh>().text = playerWord;
+        }
 
         // initialize the food
         RandomizePosition();
         ChangeLetter(resultWord[index]);
-
-        WinButton = GameObject.Find("WinButton"); 
-        WinButton.SetActive(false);
         
         /* // start and initiate speech keyword recognizer
         recognizer = new KeywordRecognizer(keywords3);
         recognizer.OnPhraseRecognized += RecognizedLetter;
         recognizer.Start();
         Debug.Log(recognizer.IsRunning); */
+
+        time = Time.time;
+        if (GameObject.FindGameObjectWithTag("Time") != null)
+        {
+            GameObject.FindGameObjectWithTag("Time").GetComponent<TextMesh>().text = "0";    
+        }
         
+    }
+
+    private void Update() {
+        if (GameObject.FindGameObjectWithTag("Time") != null)
+        {
+            GameObject.FindGameObjectWithTag("Time").GetComponent<TextMesh>().text = Mathf.Abs(time - Time.time).ToString("F2");    
+        }
     }
 
 
@@ -58,9 +74,12 @@ public class Food : MonoBehaviour
     }
 
     private void UpdateLetterFood() {
-        char newLetter = resultWord[index];
-        ChangeLetter(newLetter);
-        RandomizePosition();
+        if (index < wordLength)
+        {
+            char newLetter = resultWord[index];
+            ChangeLetter(newLetter);
+            RandomizePosition();    
+        }
     }
 
     private void UpdateWord() {
@@ -72,8 +91,8 @@ public class Food : MonoBehaviour
         index++;
         if (index == resultWord.Length)
         {
-            WinButton.SetActive(true);   
-            Time.timeScale = 0;
+            score = Mathf.Abs(time - Time.time);
+            SceneManager.LoadScene(3);
         }
     }
 
@@ -91,4 +110,5 @@ public class Food : MonoBehaviour
     private void RecognizedLetter(PhraseRecognizedEventArgs args) {
         Debug.Log(args.text);
     }
+    
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Snake : MonoBehaviour
 {
@@ -12,7 +13,13 @@ public class Snake : MonoBehaviour
 
     public int initialSize= 2;
 
+    private GameObject LooseButton;
+
     private void Start() {
+        LooseButton = GameObject.Find("LooseButton");
+               
+        LooseButton.SetActive(false);
+        
         ResetState();
     }
 
@@ -52,7 +59,7 @@ public class Snake : MonoBehaviour
 
     }
 
-    private void ResetState() {
+    public void ResetState() {
         for (int i = 1; i < _segments.Count; i++)
         {
             Destroy(_segments[i].gameObject);
@@ -74,7 +81,9 @@ public class Snake : MonoBehaviour
         {
             Grow();   
         } else if (other.tag == "Obstacle") {
-            ResetState();
+            LooseButton.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 }
+

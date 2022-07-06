@@ -7,6 +7,8 @@ TagManager:
   - Food
   - Obstacle
   - Word
+  - WinButton
+  - LooseButton
   layers:
   - Default
   - TransparentFX

@@ -16,6 +16,8 @@ public class Food : MonoBehaviour
     private string[] resultWords = new string[]{"Strawberry", "Friendship", "Everything", "Appreciate", "Motivation"};
 
     private KeywordRecognizer recognizer;
+    
+    private GameObject WinButton;
 
     private void Start() {
         // initialize everything for the word 
@@ -27,6 +29,9 @@ public class Food : MonoBehaviour
         // initialize the food
         RandomizePosition();
         ChangeLetter(resultWord[index]);
+
+        WinButton = GameObject.Find("WinButton"); 
+        WinButton.SetActive(false);
         
         /* // start and initiate speech keyword recognizer
         recognizer = new KeywordRecognizer(keywords3);
@@ -67,8 +72,8 @@ public class Food : MonoBehaviour
         index++;
         if (index == resultWord.Length)
         {
-            // TODO show endcard and result
-            Debug.Log("Game Finished");    
+            WinButton.SetActive(true);   
+            Time.timeScale = 0;
         }
     }
 

@@ -16,6 +16,7 @@ public class Food : MonoBehaviour
     private int wordLength = 10;
     
     private string[] resultWords = new string[]{"Strawberry", "Friendship", "Everything", "Appreciate", "Motivation"};
+    private int chosenWordIndex;
 
     private KeywordRecognizer recognizer;
 
@@ -25,7 +26,8 @@ public class Food : MonoBehaviour
     private void Start() {
         // initialize everything for the word 
         index = 0;
-        resultWord = resultWords[GetRandomWordIndex(resultWords.Length)];
+        chosenWordIndex = GetRandomWordIndex(resultWords.Length);
+        resultWord = resultWords[chosenWordIndex];
         playerWord = "----------";
         if (GameObject.FindGameObjectWithTag("Word") != null)
         {
@@ -36,11 +38,10 @@ public class Food : MonoBehaviour
         RandomizePosition();
         ChangeLetter(resultWord[index]);
         
-        /* // start and initiate speech keyword recognizer
-        recognizer = new KeywordRecognizer(keywords3);
+        // start and initiate speech keyword recognizer
+        recognizer = new KeywordRecognizer(resultWords);
         recognizer.OnPhraseRecognized += RecognizedLetter;
         recognizer.Start();
-        Debug.Log(recognizer.IsRunning); */
 
         time = Time.time;
         if (GameObject.FindGameObjectWithTag("Time") != null)
@@ -108,7 +109,11 @@ public class Food : MonoBehaviour
 
     // function to react if user says resultWord
     private void RecognizedLetter(PhraseRecognizedEventArgs args) {
-        Debug.Log(args.text);
+        if (args.text == resultWords[chosenWordIndex])
+        {
+            score = Mathf.Abs(time - Time.time);
+            SceneManager.LoadScene(3);
+        }
     }
     
 }
